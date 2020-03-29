@@ -1,22 +1,23 @@
 package controllers
 
-import java.time.Instant
+import java.time.{Instant, LocalDateTime}
 
 import javax.inject._
-import models.CpuReport
+import models.{Client, CpuReport}
 import play.api.libs.json.Json
 import play.api.mvc._
+import repositories.ClientRepository
 
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class HomeController @Inject()(cc: ControllerComponents, clientRepo: ClientRepository) extends AbstractController(cc) {
 
   def appSummary: Action[AnyContent] = Action {
     Ok(Json.obj("content" -> "Hive Streaming Client Tester!"))
   }
 
   def newClientId: Action[AnyContent] = Action {
-    val now = Instant.now.getNano / 1000000
-    Ok(Json.obj("id" -> now))
+    val newClient = clientRepo.create(Client(-1, "Foobar", LocalDateTime.now))
+    Ok(Json.obj("id" -> newClient.id))
   }
 
   def reportCpu: Action[AnyContent] = Action {

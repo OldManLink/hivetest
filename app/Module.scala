@@ -1,4 +1,5 @@
 import com.google.inject.AbstractModule
+import repositories.{ClientRepository, ClientRepositoryImpl}
 
 /**
  * This class is a Guice module that tells Guice how to bind several
@@ -12,7 +13,8 @@ import com.google.inject.AbstractModule
  */
 class Module extends AbstractModule {
 
-  override def configure() = {
+  override def configure(): Unit = {
+    bind(classOf[ClientRepository]).to(classOf[ClientRepositoryImpl])
   }
 
 }

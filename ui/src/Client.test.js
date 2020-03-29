@@ -10,11 +10,12 @@ describe('App tests', () => {
 
   it('renders without crashing', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<Client/>, div);
+    const item = {id: 42};
+    ReactDOM.render(<Client item = {item}/>, div);
     ReactDOM.unmountComponentAtNode(div);
   });
 
   it('newClientId function should called exactly once', () => {
-    expect(Api.newClientId.mock.calls.length).toBe(1);
+    expect(Api.newClientId.mock.calls.length).toBe(0);
   });
 });
