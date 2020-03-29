@@ -21,7 +21,9 @@ export default class Client extends Component {
   render() {
     return (
       <div className={"Client Speed-" + this.state.speed} onClick={this.switchSpeed}>
-        <h2>Client #{this.getId()} ({this.state.now})</h2>
+        <div className="ClientId">Client #{this.getId()}</div>
+        <div className="ClientCPU"> [{this.getCpuPercent()}%] </div>
+        <div className="Timestamp">({this.state.now || '...'})</div>
       </div>
     );
   }
@@ -37,17 +39,24 @@ export default class Client extends Component {
   }
 
   reportCpu() {
-    const percent = {
+    Api.reportCpu(
+      {
+        id: this.getId(),
+        percent: this.getCpuPercent()
+      },
+      result => {
+        this.setState({
+          now: result.now
+        });
+      });
+  }
+
+  getCpuPercent() {
+    return {
       "fast": 20,
       "medium": 80,
       "slow": 100
     }[this.state.speed];
-    const report = {id: this.getId(), percent: percent};
-    Api.reportCpu(report, result => {
-      this.setState({
-        now: result.now
-      });
-    });
   }
 
   getId() {

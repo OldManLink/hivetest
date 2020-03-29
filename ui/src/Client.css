@@ -1,5 +1,11 @@
 .Client {
   text-align: center;
+  width: 700px;
+  max-width: calc(100vw - 2rem);
+  margin: 0 auto 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
 
 .Client:hover {
@@ -7,7 +13,7 @@
 }
 
 .Speed-fast {
-  background-color: white;
+  background-color: whitesmoke;
 }
 
 .Speed-medium {
@@ -16,4 +22,16 @@
 
 .Speed-slow {
   background-color: coral;
+}
+
+.ClientId,
+.ClientCPU,
+.Timestamp {
+  font-size: 1.25rem;
+  font-weight: bold;
+  display: inline;
+}
+
+.Timestamp {
+  font-family: "Courier New", Courier, monospace;
 }

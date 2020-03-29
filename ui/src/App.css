@@ -1,3 +1,16 @@
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+  padding: 0;
+  margin: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -6,6 +19,8 @@
   animation: App-logo-spin infinite 20s linear;
   height: 20vmin;
   pointer-events: all;
+  cursor: pointer;
+  margin-bottom: 1rem;
 }
 
 .App-logo:hover {
@@ -19,4 +34,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+header {
+  padding: 1rem;
 }
