@@ -1,0 +1,19 @@
+.Client {
+  text-align: center;
+}
+
+.Client:hover {
+  background-color: lavender;
+}
+
+.Speed-fast {
+  background-color: white;
+}
+
+.Speed-medium {
+  background-color: bisque;
+}
+
+.Speed-slow {
+  background-color: coral;
+}

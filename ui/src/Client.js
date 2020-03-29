@@ -1,27 +1,56 @@
-/* eslint-disable no-undef */
-function getSummary(cb) {
-  return fetch('/api/summary', {
-    accept: "application/json"
-  })
-    .then(checkStatus)
-    .then(parseJSON)
-    .then(cb);
-}
+import React, {Component} from 'react';
+import Api from "./Api";
+import './Client.css';
 
-function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
+export default class Client extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {speed: 'fast'};
+    this.reportCpu = this.reportCpu.bind(this);
+    this.switchSpeed = this.switchSpeed.bind(this);
   }
-  const error = new Error(`HTTP Error ${response.statusText}`);
-  error.status = response.statusText;
-  error.response = response;
-  console.log(error); // eslint-disable-line no-console
-  throw error;
-}
 
-function parseJSON(response) {
-  return response.json();
-}
+  async componentDidMount() {
+    this.clockInterval = setInterval(this.reportCpu, 1000);
+  }
 
-const Client = { getSummary };
-export default Client;
+  componentWillUnmount() {
+    clearInterval(this.clockInterval);
+  }
+
+  render() {
+    return (
+      <div className={"Client Speed-" + this.state.speed} onClick={this.switchSpeed}>
+        <h2>Client #{this.getId()} ({this.state.now})</h2>
+      </div>
+    );
+  }
+
+  switchSpeed() {
+    this.setState({
+      speed: {
+        "fast": "medium",
+        "medium": "slow",
+        "slow": "fast"
+      }[this.state.speed]
+    })
+  }
+
+  reportCpu() {
+    const percent = {
+      "fast": 20,
+      "medium": 80,
+      "slow": 100
+    }[this.state.speed];
+    const report = {id: this.getId(), percent: percent};
+    Api.reportCpu(report, result => {
+      this.setState({
+        now: result.now
+      });
+    });
+  }
+
+  getId() {
+    return this.props.item.id;
+  }
+}
