@@ -24,6 +24,10 @@
   background-color: coral;
 }
 
+.Speed-blocked {
+  background-color: crimson;
+}
+
 .ClientId,
 .ClientCPU,
 .Timestamp {

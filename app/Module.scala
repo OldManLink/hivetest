@@ -1,5 +1,5 @@
 import com.google.inject.AbstractModule
-import repositories.{ClientRepository, ClientRepositoryImpl}
+import repositories.{ClientRepository, ClientRepositoryImpl, CpuLogRepository, CpuLogRepositoryImpl}
 
 /**
  * This class is a Guice module that tells Guice how to bind several
@@ -15,6 +15,7 @@ class Module extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[ClientRepository]).to(classOf[ClientRepositoryImpl])
+    bind(classOf[CpuLogRepository]).to(classOf[CpuLogRepositoryImpl])
   }
 
 }

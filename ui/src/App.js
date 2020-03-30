@@ -28,7 +28,10 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <header><h1>Welcome to the {this.state.title}</h1></header>
+        <header><h1>{ this.state.title.length === 0
+          ? "Loading, please wait..."
+          : "Welcome to the " + this.state.title
+        }</h1></header>
         <div onClick={this.addClient}>
           <img width="200" height="200" src={reactLogo} className="App-logo" alt="React Logo"/>
         </div>
