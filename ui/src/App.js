@@ -5,8 +5,10 @@ import Api from "./Api";
 
 import './App.css';
 import ClientList from "./ClientList";
+import Chart from "./Chart";
 
 export default class App extends Component {
+
   constructor(props) {
     super(props);
     this.state = {title: ''};
@@ -14,7 +16,7 @@ export default class App extends Component {
   }
 
   addClient() {
-    this.refs.clientList.addNewClient();
+    this.refs.clientList.addNewClient(this.refs.cpuChart.addClientId);
   }
 
   async componentDidMount() {
@@ -35,7 +37,8 @@ export default class App extends Component {
         <div onClick={this.addClient}>
           <img width="200" height="200" src={reactLogo} className="App-logo" alt="React Logo"/>
         </div>
-        <ClientList ref="clientList" key={"Clients"} />
+        <Chart ref="cpuChart"/>
+        <ClientList ref="clientList"/>
       </div>
     );
   }

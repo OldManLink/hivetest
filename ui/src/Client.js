@@ -3,6 +3,7 @@ import Api from "./Api";
 import './Client.css';
 
 export default class Client extends Component {
+
   constructor(props) {
     super(props);
     this.state = {speed: 'fast', sequence: 0, pendingLogs: []};
