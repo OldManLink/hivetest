@@ -9,7 +9,8 @@
 }
 
 .Client:hover {
-  background-color: lavender;
+  border-style: outset;
+  border-color:lavender;
 }
 
 .Speed-fast {
@@ -17,6 +18,10 @@
 }
 
 .Speed-medium {
+  background-color: beige;
+}
+
+.Speed-sluggish {
   background-color: bisque;
 }
 
@@ -24,15 +29,26 @@
   background-color: coral;
 }
 
-.Speed-blocked {
+.Speed-snail {
   background-color: crimson;
+}
+
+.Blocked {
+  border-style: double;
+  border-color: darkmagenta;
 }
 
 .ClientId,
 .ClientCPU,
-.Timestamp {
+.Timestamp,
+.Checkbox {
   font-size: 1.25rem;
   font-weight: bold;
+  display: inline;
+}
+input.ClientCPU {
+  width: 3.5rem;
+  height: 1.25rem;
   display: inline;
 }
 

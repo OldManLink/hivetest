@@ -14,7 +14,8 @@ class HomeController @Inject()(cc: ControllerComponents, cpuService: ClientCpuSe
   }
 
   def newClientId: Action[AnyContent] = Action {
-    request => Ok(Json.toJson(cpuService.createClient(request.headers("User-Agent"))))
+    request =>
+      Ok(Json.toJson(cpuService.createClient(request.headers("User-Agent"))))
   }
 
   def reportCpu: Action[AnyContent] = Action {
@@ -26,6 +27,9 @@ class HomeController @Inject()(cc: ControllerComponents, cpuService: ClientCpuSe
   }
 
   def getCpuAverage(clientId: Long): Action[AnyContent] = Action {
-    Ok(Json.toJson(cpuService.getCpuAverage(clientId)))
+    request =>
+      cpuService.getCpuAverage(clientId)
+        .map(clientCpuResponse => Ok(Json.toJson(clientCpuResponse)))
+        .getOrElse(BadRequest("Unknown client ID"))
   }
 }
