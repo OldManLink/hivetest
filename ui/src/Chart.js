@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import CanvasJSReact, {CanvasJS} from './lib/canvasjs.react';
+import Api from "./Api";
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 var updateInterval = 500;
@@ -18,27 +19,44 @@ export default class Chart extends Component {
   }
 
   addClientId(client) {
-    const clientWithCpu = {...client, cpuAverage: 0}
+    const clientWithCpu = {...client, cpuAverage: 0};
     this.setState({
       clientList: [...this.state.clientList, clientWithCpu]
     });
-    console.log(this.state.clientList)
+  }
+
+  async getDataPoints() {
+    return this.state.clientList.reduce((listPromise, client) => {
+      return listPromise.then( accumulator => {
+        return Api.getCpuAverage(client, updatedClient => {
+          const dataPoint = {
+            label: "Client #" + updatedClient.id,
+            y: updatedClient.cpuAverage
+          };
+          return [...accumulator, dataPoint]
+        })
+      })
+    }, Promise.resolve([/* Initial value of accumulator */]));
+  }
+
+  getCpuGrandAverage(total, count) {
+    return count === 0
+      ? 0
+      : Math.round(total / count)
   }
 
   updateChart() {
-    var dpsColor, dpsTotal = 0, deltaY, yVal;
-    var dps = this.chart.options.data[0].dataPoints;
-    var chart = this.chart;
-    for (var i = 0; i < dps.length; i++) {
-      deltaY = Math.round(2 + Math.random() * (-2 - 2));
-      yVal = deltaY + dps[i].y > 0 ? (deltaY + dps[i].y < 100 ? dps[i].y + deltaY : 100) : 0;
-      dpsColor = yVal >= 90 ? "#e40000" : yVal >= 70 ? "#ec7426" : yVal >= 50 ? "#81c2ea" : "#88df86 ";
-      dps[i] = {label: "Core " + (i + 1), y: yVal, color: dpsColor};
-      dpsTotal += yVal;
-    }
-    chart.options.data[0].dataPoints = dps;
-    chart.options.title.text = "CPU Usage " + Math.round(dpsTotal / 6) + "%";
-    chart.render();
+    this.getDataPoints().then(dataPoints => {
+      var dpsTotal = 0;
+      this.chart.options.data[0].dataPoints = dataPoints.map(datapoint => {
+        const yValue = datapoint.y;
+        const dataColor = yValue >= 90 ? "#e40000" : yValue >= 70 ? "#ec7426" : yValue >= 50 ? "#81c2ea" : "#88df86 ";
+        dpsTotal += yValue;
+        return {...datapoint, color: dataColor}
+      });
+      this.chart.options.title.text = "CPU Usage " + this.getCpuGrandAverage(dpsTotal, dataPoints.length) + "%";
+      this.chart.render();
+    })
   }
 
   render() {
@@ -60,12 +78,6 @@ export default class Chart extends Component {
         yValueFormatString: "#,###'%'",
         indexLabel: "{y}",
         dataPoints: [
-          {label: "Core 1", y: 68},
-          {label: "Core 2", y: 3},
-          {label: "Core 3", y: 8},
-          {label: "Core 4", y: 87},
-          {label: "Core 5", y: 2},
-          {label: "Core 6", y: 6}
         ]
       }]
     };

@@ -12,6 +12,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.Helpers._
 import play.api.test._
 import repositories.{ClientRepository, CpuLogRepository}
+import services.{ClientCpuService, ClientCpuServiceImpl}
 
 @RunWith(classOf[JUnitRunner])
 class HomeControllerSpec extends Specification with Mockito {
@@ -21,7 +22,7 @@ class HomeControllerSpec extends Specification with Mockito {
   "HomeController GET" should {
 
     "render the appSummary resource from a new instance of controller" in new WithApplication {
-      val controller = new HomeController(stubControllerComponents(), mock[ClientRepository], mock[CpuLogRepository])
+      val controller = new HomeController(stubControllerComponents(), mock[ClientCpuService])
       val summary = controller.appSummary().apply(getRequest("/summary"))
 
       status(summary) must beEqualTo(OK)
@@ -54,7 +55,8 @@ class HomeControllerSpec extends Specification with Mockito {
       val newClient = Client(42, "Foobar", LocalDateTime.now)
       val clientRepoMock = mock[ClientRepository]
       clientRepoMock.create(any[Client]()) returns(newClient)
-      val controller = new HomeController(stubControllerComponents(), clientRepoMock, mock[CpuLogRepository])
+      val cpuService = new ClientCpuServiceImpl(clientRepoMock, mock[CpuLogRepository])
+      val controller = new HomeController(stubControllerComponents(), cpuService)
       val newClientId = controller.newClientId().apply(getRequest("/newClientId"))
 
       status(newClientId) must beEqualTo(OK)
@@ -72,8 +74,8 @@ class HomeControllerSpec extends Specification with Mockito {
       val newCpuLog = CpuLog(42, newClient, 37, 73, now)
       val cpuLogRepoMock = mock[CpuLogRepository]
       cpuLogRepoMock.create(any[CpuLog]()) returns(newCpuLog)
-
-      val controller = new HomeController(stubControllerComponents(), clientRepoMock, cpuLogRepoMock)
+      val cpuService = new ClientCpuServiceImpl(clientRepoMock, cpuLogRepoMock)
+      val controller = new HomeController(stubControllerComponents(), cpuService)
 
       val reportCpu = controller.reportCpu().apply(
         postJsonRequest("/reportCpu").withJsonBody(Json.toJson(CpuReport(42, 37, 73)))
@@ -89,7 +91,8 @@ class HomeControllerSpec extends Specification with Mockito {
       val clientRepoMock = mock[ClientRepository]
       clientRepoMock.read(anyLong) returns None
       val cpuLogRepoMock = mock[CpuLogRepository]
-      val controller = new HomeController(stubControllerComponents(), clientRepoMock, cpuLogRepoMock)
+      val cpuService = new ClientCpuServiceImpl(clientRepoMock, cpuLogRepoMock)
+      val controller = new HomeController(stubControllerComponents(), cpuService)
 
       val reportCpu = controller.reportCpu().apply(
         postJsonRequest("/reportCpu").withJsonBody(Json.toJson(CpuReport(42, 37, 73)))

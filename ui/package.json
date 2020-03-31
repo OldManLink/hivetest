@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "jest-canvas-mock": "^2.2.0",
     "kleur": "^3.0.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

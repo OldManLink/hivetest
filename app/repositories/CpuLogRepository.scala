@@ -13,7 +13,6 @@ import repositories.AnormInstantExtension._
 
 
 trait CpuLogRepository {
-
   def create(cpuReport: CpuLog): CpuLog
 
   def read(id: Long): Option[CpuLog]
@@ -21,6 +20,8 @@ trait CpuLogRepository {
   def count: Long
 
   def delete(id: Long): Boolean
+
+  def readLogsForClient(id: Long): Seq[CpuLog]
 }
 
 class CpuLogRepositoryImpl @Inject()(database: Database, clientRepo: ClientRepository) extends CpuLogRepository {
@@ -68,6 +69,13 @@ class CpuLogRepositoryImpl @Inject()(database: Database, clientRepo: ClientRepos
     database.withConnection { implicit c =>
       SQL("DELETE from cpu_log WHERE id={id}")
         .on("id" -> id).executeUpdate() == 1
+    }
+  }
+
+  override def readLogsForClient(clientId: Long): Seq[CpuLog] = {
+    database.withConnection { implicit c =>
+      SQL("SELECT * from cpu_log WHERE client_id={id}")
+        .on("id" -> clientId).as(mapper *)
     }
   }
 }

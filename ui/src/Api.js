@@ -34,6 +34,16 @@ function reportCpu(report, cb) {
     .then(cb);
 }
 
+/* eslint-disable no-undef */
+function getCpuAverage(client, cb) {
+  return fetch('/api/cpu/' + client.id, {
+    accept: "application/json"
+  })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(cb);
+}
+
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -49,5 +59,5 @@ function parseJSON(response) {
   return response.json();
 }
 
-const Api = { getSummary, newClientId, reportCpu };
+const Api = { getSummary, newClientId, reportCpu, getCpuAverage };
 export default Api;

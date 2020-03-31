@@ -9,6 +9,7 @@ GET     /                           controllers.FrontendController.index()
 GET     /api/summary                controllers.HomeController.appSummary
 GET     /api/newid                  controllers.HomeController.newClientId
 POST    /api/report                 controllers.HomeController.reportCpu
+GET     /api/cpu/:id                controllers.HomeController.getCpuAverage(id:Long)
 
 # Serve static assets under public directory
 GET     /*file                      controllers.FrontendController.assetOrDefault(file)

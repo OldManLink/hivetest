@@ -63,6 +63,14 @@ class CpuLogRepositorySpec extends Specification {
       repository.count must beEqualTo(cpuLogCount - 1)
     }
 
+    "read all cpuLogs for a client" in new WithApplication {
+      val repository = app.injector.instanceOf[CpuLogRepository]
+      val allLogs = repository.readLogsForClient(client.id)
+      allLogs.length must beEqualTo(5)
+      allLogs.forall(c => c.client.id == client.id)
+      allLogs.map(c => c.percent) must beEqualTo(Seq(20, 30, 40, 50, 60))
+    }
+
     "delete the test client" in new WithApplication {
       app.injector.instanceOf[ClientRepository].delete(client.id) must beTrue
     }
