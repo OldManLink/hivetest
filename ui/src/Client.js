@@ -41,7 +41,6 @@ export default class Client extends Component {
   render() {
     return (
       <div className={"Client Speed-" + this.getSpeed() + (this.state.blocked ? " Blocked" : "") }
-           onClick={this.switchSpeed}
            onMouseEnter={this.mouseIn}
            onMouseLeave={this.mouseOut}>
         <div className="ClientId">Client #{this.getId()}</div>
@@ -96,7 +95,7 @@ export default class Client extends Component {
       }
       this.sendReport(report);
     } else {
-      if (this.state.blocked) {
+      if (this.state.cpu < 100 && this.state.blocked) {
         this.savePendingReport(report);
       }
     }

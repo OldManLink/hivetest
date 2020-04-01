@@ -29,7 +29,7 @@ export default class ClientList extends Component {
         <div>
           {this.state.list.length === 0
             ? ""
-            : "(Click Client to change CPU percentage)"
+            : "(Move mouse over Client to change CPU percentage and block)"
           }
         </div>
       </div>

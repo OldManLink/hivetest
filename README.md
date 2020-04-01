@@ -1,32 +1,29 @@
 [![MIT License][license-badge]][LICENSE]
 
-# Scala Play React Seed
+# Hive Streaming Client Tester
 
-> Use play framework to develop the web application backend/services and frontend using React Create App, all in a totally integrated workflow and single unified console. This approach will deliver perfect development experience without CORS hassle. 
+> Home assignment created by [Peter Hugosson-Miller][oldmanlink-profile] as part of the recruitment process for Hive Streaming. Make a service to monitor, display and report the CPU usages of remote clients 
+> 
+> Implemented in Play/Scala on the backend and ReactJS/CanvasJS on the frontend. Based on the excellent [Scala Play React Seed](http://bit.ly/2A1AzEq) .
  
+![TwentyClients](https://github.com/OldManLink/hivetest/blob/master/docs/11_TwentyClients.png)
 
-Read more @ http://bit.ly/2A1AzEq
-
-[![Scala Play React Seed](https://github.com/yohangz/scala-play-react-seed/blob/master/react.png)](http://bit.ly/2A1AzEq)
-
-## Version Summary
-
-* [Play Framework: 2.8.0](https://www.playframework.com/documentation/2.8.x/Home)
-* [React: 16.8.6](https://reactjs.org/)
-* [Create React App: 2.1.8](https://github.com/facebookincubator/create-react-app)
-
-## How to use it?
+## How to build it?
 
 ### Prerequisites
 
+* [Java 8](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html)
 * [Node.js](https://nodejs.org/)
+* [Yarn](https://classic.yarnpkg.com/en/docs/install/)
+* [sbt](https://www.scala-sbt.org/download.html)
 * [scala](https://www.scala-lang.org/download/)
+* [MySQL 5.6](https://dev.mysql.com/downloads/mysql/5.6.html)
 
 ### Let's get started,
 
 * Fork or clone this repository.
 
-* Used any of the following [SBT](http://www.scala-sbt.org/) commands which will intern trigger frontend associated npm scripts.
+* Use any of the following [SBT](http://www.scala-sbt.org/) commands which will intern trigger frontend associated npm scripts.
 
 ```
     sbt clean           # Clean existing build artifacts
@@ -52,6 +49,7 @@ Read more @ http://bit.ly/2A1AzEq
 │     ├── application.conf                # Play application configuratiion file.
 │     ├── logback.xml                     # Logging configuration
 │     └── routes                          # Routes definition file
+├── /docs/                                # Documents and screenshots
 ├── /logs/                                # Log directory
 │     └── application.log                 # Application log file
 ├── /project/                             # Contains project build configuration and plugins
@@ -80,100 +78,67 @@ Read more @ http://bit.ly/2A1AzEq
 └── ui-build.sbt                          # SBT command hooks associated with frontend npm scripts 
 ```
 
-## What is new in here?
-
-### FrontendCommands.scala
-
-* Frontend build command mapping configuration.
-
-```
-    ├── /project/
-    │     ├── FrontendCommands.scala
-```
-
-
-### FrontendRunHook.scala
-
-* PlayRunHook implementation to trigger ``npm run start`` on ``sbt run``.
-
-```
-    ├── /project/
-    │     ├── FrontendRunHook.scala
-```
-
-### FrontendController.scala
-
-* Asset controller wrapper serving frontend assets and artifacts.
-
-```
-    ├── /app/                                 
-    │     └── /controllers/                   
-    │           └── FrontendController.scala
-```
-
-### ui-build.sbt
-
-* This file contains the build task hooks to trigger frontend npm scripts on sbt command execution.
-
-### npm run commands
-
-* New and modified npm scripts of [Create React App](https://github.com/facebookincubator/create-react-app) generated package.json.
-* Check [UI README.md](./ui/README.md) to see all available frontend build tasks.
-
-```
-├── /ui/                       
-│     ├── package.json          
-```
-
-## Routes
-
-```
-├── /conf/      
-│     ├── routes
-```
-
-* The following route configuration map index.html to entry route (root). This should be placed as the initial route.
-
-```
-GET        /             controllers.FrontendController.index()
-```
-
-* All API routes should be prefixed with API prefix defined under ``application.conf`` (Default prefix ``apiPrefix = "api"``) 
-
-Example API route:
-
-```
-GET        /api/summary  controllers.HomeController.appSummary
-```
-
-* The following route is being used to serve frontend associated build artifacts (css, js) and static assets (images, etc.). This should be placed as the final route.
-
-```
-GET        /*file        controllers.FrontendController.assetOrDefault(file)
-```
-
 **Note: _On production build all the front end React build artifacts will be copied to the `public` folder._**
 
-## Can be used to implement any front end/ui build!
+## How to use it?
 
-* Simply replace the ui directory with the build of your choice
-* Make output directory ROOT/public/
-* Implement a proxy to localhost:9000
+### Prepare the database
 
-## Looking for some other frontend framework or language choice
+Open a MySQL terminal window as root, and run the `conf/sql/db_setup.sql` script, copied here for ease of use:
+```
+CREATE DATABASE IF NOT EXISTS `hivetest` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
-* [Java Play React Seed](https://github.com/yohangz/java-play-react-seed)
-* [Scala Play Angular Seed](https://github.com/yohangz/scala-play-angular-seed)
-* [Java Play Angular Seed](https://github.com/yohangz/java-play-angular-seed)
-* [Scala Play Vuejs Seed](https://github.com/duncannevin/scala-play-vue-seed) by [Duncan Nevin](https://github.com/duncannevin)
-* [Java Play Vuejs Seed](https://github.com/duncannevin/java-play-vue-seed) by [Duncan Nevin](https://github.com/duncannevin)
+USE `hivetest`;
 
-## Contributors
+GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON hivetest.* TO `hivedbuser`@`localhost` IDENTIFIED BY 'streeemz';
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-|[<img src="https://avatars2.githubusercontent.com/u/5279079?s=400&v=4" width="100px;"/><br /><sub>Yohan Gomez</sub>][yohan-profile]| [<img src="https://avatars2.githubusercontent.com/u/6312524?s=400&u=efc9267c6f903c379fafaaf7b3b0d9a939474c01&v=4" width="100px;"/><br /><sub>Lahiru Jayamanna</sub>][lahiru-profile]<br />| [<img src="https://avatars0.githubusercontent.com/u/3881403?s=400&v=4" width="100px;"/><br /><sub>Gayan Attygalla</sub>](https://github.com/Arty26)|
-| :---: | :---: | :---: |
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON hivetest.* TO `hivedbuser`@`%`IDENTIFIED BY 'streeemz';
+
+```
+
+### Start the server and frontend
+Open a console window and enter this command:
+```
+sbt run
+```
+This will open your browser on the address `http://localhost:3000/` with the following view:
+
+![Opened Tester](https://github.com/OldManLink/hivetest/blob/master/docs/00_OpenedTester.png)
+
+Click on the <img src="https://github.com/OldManLink/hivetest/blob/master/docs/01_ReactButton.png" width="117" height="91" /> to add a running client to the frontend.
+
+You can add as many as you like, but please see the following information first. As you can see, the client has a sensible starting value of 20%:
+![OneClient](https://github.com/OldManLink/hivetest/blob/master/docs/02_OneClient.png)
+
+You can change this by moving your mouse over the client and changing the percentage thus:
+![PercentChanger](https://github.com/OldManLink/hivetest/blob/master/docs/03_PercentChanger.png)
+![MakeSlower](https://github.com/OldManLink/hivetest/blob/master/docs/04_MakeSlower.png)
+![Slowed](https://github.com/OldManLink/hivetest/blob/master/docs/05_Slowed.png)
+
+The client changes colour as it gets slower, but as long as it is able to send its report to the backend you can see its timestamp changing. Each new timestamp comes from the server after a successful report.
+
+Sometimes a client can't reach the backend, even though it is still collecting cpu information. To simulate this, click on the `block` checkbox as seen below:
+![Block](https://github.com/OldManLink/hivetest/blob/master/docs/06_Block.png)
+![Blocked](https://github.com/OldManLink/hivetest/blob/master/docs/07_Blocked.png)
+
+You can see the client gains a double border to show it is blocked, and queued reports start to appear in the client as a line of dots, one per report. When you unblock the client, all the queued reports are sent at once. You will see how the graph might suddenly hop up or down as it gets a lot of new information at the same time.
+![Unblock](https://github.com/OldManLink/hivetest/blob/master/docs/08_Unblock.png)
+
+Sometimes a client might get so busy that it is unable to send reports to the backend, even though the backend is available. Try setting the cpu percentage to 100, and you will see that the timestamp remains unchanged, indicating that no reports are being sent. Compare the timestamps on client #217 with the others:
+![StoppedClient100](https://github.com/OldManLink/hivetest/blob/master/docs/09_StoppedClient100.png)
+
+Then when the client is able to send again, all the missing reports are automatically filled in by the server as 100%, so if you drop the cpu percentage again you will see how the graph jumps up once more:
+![RestartClient97](https://github.com/OldManLink/hivetest/blob/master/docs/10_RestartClient97.png)
+
+The system is quite robust, since it is written in Scala. With twenty clients runing there is no noticeable slowdown. I will determine the maximum number of clients for my setup some other time, but for now, here's what 20 clients look like on a 2019 MacBook Pro, running OS X Catalina, and displayed on the Safari browser:
+![TwentyClients](https://github.com/OldManLink/hivetest/blob/master/docs/11_TwentyClients.png)
+
+### Stop the server and frontend
+To stop all the clients smoothly, simply reload the page on your browser. React will smoothly unmount and terminate all the running clients. Once this is done, press `<Ctrl> C` in the console to terminate the backend and frontend services.
+
+## Further discussion points
+I'm tempted to put all my thoughts here in the documentation, but then I would never get this sent off, so I'll have to stop here. If you want to know more, please call me back for a second interview!
+
 
 ## License
 
@@ -182,6 +147,4 @@ This software is licensed under the MIT license
 [license-badge]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license]: https://github.com/yohangz/java-play-react-seed/blob/master/README.md
 
-[yohan-profile]: https://github.com/yohangz
-[lahiru-profile]: https://github.com/lahiruz
-[gayan-profile]: https://github.com/Arty26
+[oldmanlink-profile]: https://github.com/oldmanlink

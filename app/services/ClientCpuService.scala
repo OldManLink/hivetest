@@ -5,6 +5,8 @@ import java.time.LocalDateTime
 import com.google.inject.Inject
 import helpers.CpuHelper
 import models.{Client, ClientCpuResponse, ClientResponse, CpuLog, CpuReport, LogResponse}
+import play.api.Logging
+import play.api.libs.json.Json
 import repositories.{ClientRepository, CpuLogRepository}
 
 trait ClientCpuService {
@@ -13,15 +15,16 @@ trait ClientCpuService {
   def getCpuAverage(clientId: Long): Option[ClientCpuResponse]
 }
 
-class ClientCpuServiceImpl @Inject()(clientRepo: ClientRepository, cpuLogRepo: CpuLogRepository) extends ClientCpuService with CpuHelper {
+class ClientCpuServiceImpl @Inject()(clientRepo: ClientRepository, cpuLogRepo: CpuLogRepository) extends ClientCpuService with CpuHelper with Logging {
 
   override def createClient(name: String): ClientResponse = {
     val newClient = clientRepo.create(Client(-1, name, LocalDateTime.now))
+    logger.info(s"Created client: ${Json.toJson(newClient)}")
     ClientResponse(newClient.id)
   }
 
   override def reportCpu(cpuReport: CpuReport): Option[LogResponse] = {
-    println(s"Report: $cpuReport")
+    logger.info(s"Report: ${Json.toJson(cpuReport)}")
     clientRepo.read(cpuReport.id).map { client =>
       val newLog = cpuLogRepo.create(CpuLog(-1, client, cpuReport.sequence, cpuReport.percent, LocalDateTime.now))
       LogResponse(newLog.creationInstant)
@@ -29,7 +32,7 @@ class ClientCpuServiceImpl @Inject()(clientRepo: ClientRepository, cpuLogRepo: C
   }
 
   override def getCpuAverage(clientId: Long): Option[ClientCpuResponse] = {
-    println(s"getCpuAverage($clientId)")
+    logger.info(s"Get Cpu Average for client($clientId)")
     clientRepo.read(clientId).map { client =>
       val allLogs = cpuLogRepo.readLogsForClient(client.id)
       ClientCpuResponse(clientId, calculateCpuAverage(allLogs))

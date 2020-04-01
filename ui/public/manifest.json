@@ -1,6 +1,6 @@
 {
-  "short_name": "Play React",
-  "name": "Scala Play React Seed",
+  "short_name": "Hive Test",
+  "name": "Hive Streaming Client Tester",
   "icons": [
     {
       "src": "favicon.ico",
